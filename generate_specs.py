@@ -4,7 +4,7 @@ import json
 from pprint import *
 import matplotlib.pyplot as plt
 
-folder_path="exp1125/original parameters"
+folder_path="exp1125/original parameters/parameters"
 files=[]
 parameters={}
 names='index, time, power, angle'
@@ -18,12 +18,12 @@ for file in files:
     else:
         start=0
     plt.figure()
-    plt.plot(data['index'][start:],data['ch0'][start:])
+    plt.plot(data['index'][start:],data['power'][start:],'.')
     plt.title(file.split('.')[0])
     plt.show()
     if file == 'beam width.txt':
         pass
     else:
-        data = data['ch0'][start:]
+        data = data['power'][start:]
         parameters[file.split('.')[0]] = np.average(data)
 pprint(parameters)
