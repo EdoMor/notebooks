@@ -7,6 +7,8 @@ import collections
 from scipy import optimize as fit
 import seaborn as sbs
 
+np.set_printoptions(precision=17)
+
 folder_path = "exp1125/original parameters/angle data/static angles"
 files = list_files(folder_path)
 names = 'index, time, power, angle'
@@ -45,5 +47,4 @@ xdata=np.array(list(angle_voltages.keys()))
 ydata=np.array(list(angle_voltages.values()))
 parameters_optimized, parameters_covariance=fit.curve_fit(lambda x,a,b: a*x+b, xdata, ydata)
 error=np.max(list(angle_meshurment_errors.values()))
-draw_plots(xdata,ydata,error)
-
+print(np.float64(parameters_optimized))
