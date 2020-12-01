@@ -53,8 +53,19 @@ def single_slit_far_field_model(x, A, z, d, wl, offset):
         (0.25 + 0.25j) * (d + 2 * (x - offset)) * np.sqrt(((2 * np.pi) / wl) / z)))))
 
 
-def double_slit_model(x, A, z, d, k, L):
-    return A * (8 * z * np.cos((k * L * x) / (2 * z)) ** 2 * np.sin((d * k * x) / (2 * z)) ** 2) / (k * np.pi * x ** 2)
+def double_slit_model(x, A, z, d, wl, L, offset):
+    '''
+
+    :param x:
+    :param A:
+    :param z:
+    :param d:
+    :param wl:
+    :param L:
+    :param offset:
+    :return:
+    '''
+    return A * (8 * z * np.cos(((2 * np.pi / wl) * L * (x - offset)) / (2 * z)) ** 2 * np.sin((d * (2 * np.pi / wl) * (x - offset)) / (2 * z)) ** 2) / ((2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
 
 def n_slits_model(x, A, z, d, k, L, n):
