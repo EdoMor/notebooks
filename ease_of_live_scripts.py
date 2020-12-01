@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from typing import Callable
-from scipy.special import erf, erfi
+from scipy.special import erf, erfi, sici
 import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=17)
@@ -45,8 +45,12 @@ def single_slit_model(x, A, z, d, wl, offset):
     return A * (2 * z * np.sin((d * (2 * np.pi / wl) * (x - offset)) / (2 * z)) ** 2) / (
             (2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
+def single_slit_model_with_integration(x, A, z, d, wl, s, offset):
+    return A*(2 * z * (-(z - z * np.cos((d * (2 * np.pi / wl) * (s - (x-offset))) / z) + d * (2 * np.pi / wl) * (s - (x-offset)) * sici((d * (2 * np.pi / wl) * (-s + (x-offset))) / z)[0]) / (
+                2. * (s - (x-offset)) * z) + ((-1 + np.cos((d * (2 * np.pi / wl) * (s + (x-offset))) / z)) / (s + (x-offset)) + (
+                d * (2 * np.pi / wl) * sici((d * (2 * np.pi / wl) * (s + (x-offset))) / z)[0]) / z) / 2.)) / ((2 * np.pi / wl) * np.pi)
 
-def single_slit_far_field_model(x, A, z, d, wl, offset):
+def single_slit_near_field_model(x, A, z, d, wl, offset):
     return np.real(A * (-0.25j * (erf((0.25 + 0.25j) * (d - 2 * (x - offset)) * np.sqrt(((2 * np.pi) / wl) / z)) + erf(
         (0.25 + 0.25j) * (d + 2 * (x - offset)) * np.sqrt(((2 * np.pi) / wl) / z))) * (erfi(
         (0.25 + 0.25j) * (d - 2 * (x - offset)) * np.sqrt(((2 * np.pi) / wl) / z)) + erfi(
@@ -68,9 +72,9 @@ def double_slit_model(x, A, z, d, wl, L, offset):
     return A * (8 * z * np.cos(((2 * np.pi / wl) * L * (x - offset)) / (2 * z)) ** 2 * np.sin((d * (2 * np.pi / wl) * (x - offset)) / (2 * z)) ** 2) / ((2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
 
-def n_slits_model(x, A, z, d, k, L, n):
-    return A * (2 * z * csc((k * L * x) / (2 * z)) ** 2 * np.sin((d * k * x) / (2 * z)) ** 2 * np.sin(
-        (k * L * (1 + 2 * n) * x) / (2 * z)) ** 2) / (k * np.pi * x ** 2)
+def n_slits_model(x, A, z, d, wl, L, n, offset):
+    return A * (2 * z * csc(((2 * np.pi / wl) * L * (x-offset)) / (2 * z)) ** 2 * np.sin((d * (2 * np.pi / wl) * (x-offset)) / (2 * z)) ** 2 * np.sin(
+        ((2 * np.pi / wl) * L * (1 + 2 * n) * (x-offset)) / (2 * z)) ** 2) / ((2 * np.pi / wl) * np.pi * (x-offset) ** 2)
 
 
 def volt_to_angle(data: list):
