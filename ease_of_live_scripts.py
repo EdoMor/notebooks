@@ -68,7 +68,7 @@ def single_slit_near_field_model(x, A, z, d, wl, offset):
         (0.25 + 0.25j) * (d + 2 * (x - offset)) * np.sqrt(((2 * np.pi) / wl) / z)))))
 
 
-def double_slit_model(x, A, z, d, wl, L, offset, B, res):
+def double_slit_model(x, A, z, d, wl, L, offset):
     '''
 
     :param x:
@@ -102,8 +102,11 @@ def model_integrate(xdata,model,s,*args):
     '''
     ydata=np.zeros(len(xdata))
     for i in range(len(xdata)):
-        ydata[i]=np.average(model(np.linspace(xdata[i]-s,xdata[i]+s,1000),*args))
+        v = np.linspace(xdata[i] - s / 2, xdata[i] + s / 2, 1000)
+        for j in v:
+            ydata[i] += model(j, *args)
     return ydata
+
 
 def volt_to_angle(data: list):
     '''
