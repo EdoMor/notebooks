@@ -1,7 +1,9 @@
 import os
+import winsound
 import numpy as np
 from typing import Callable
 from scipy.special import erf, erfi, sici
+import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=17)
@@ -18,6 +20,14 @@ def list_files(path: str):
         files.append(i)
     files = files[0][2]
     return files
+
+
+def list_folders(path: str):
+    folders = []
+    for i in os.walk(path):
+        folders.append(i)
+    folders = folders[0][1]
+    return folders
 
 
 def read(folder: str, file: str):
@@ -90,7 +100,12 @@ def n_slits_model(x, A, z, d, wl, L, n, offset):
         ((2 * np.pi / wl) * L * (1 + 2 * n) * (x - offset)) / (2 * z)) ** 2) / (
                    (2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
-def model_integrate(xdata,model,s,*args):
+
+def n_slits_model_reduced(xd, p2, pL, pn, xd0):
+    return p2 * (csc(pL * (xd - xd0)) ** 2 * np.sin(pn * (xd - xd0)) ** 2 * np.sin(xd - xd0) ** 2) / ((xd - xd0) ** 2)
+
+
+def model_integrate(xdata, model, s, *args):
     '''
     used to create a model function with integration
 
@@ -100,10 +115,11 @@ def model_integrate(xdata,model,s,*args):
     :param args: additional model arguments
     :return: integrative model function
     '''
-    ydata=np.zeros(len(xdata))
+    ydata = np.zeros(len(xdata))
     for i in range(len(xdata)):
-        ydata[i]=np.average(model(np.linspace(xdata[i]-s,xdata[i]+s,1000),*args))
+        ydata[i] = np.sum(model(np.linspace(xdata[i] - s, xdata[i] + s, 1000), *args) * ((2 * s) / 1000))
     return ydata
+
 
 def volt_to_angle(data: list):
     '''
@@ -152,3 +168,8 @@ def add_subplot_minimap(ax, rect):
     subax.xaxis.set_tick_params(labelsize=x_labelsize)
     subax.yaxis.set_tick_params(labelsize=y_labelsize)
     return subax
+
+
+def ring():
+    filename = 'bell.wav'
+    winsound.PlaySound(filename, winsound.SND_FILENAME)
