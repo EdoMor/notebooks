@@ -68,20 +68,16 @@ def single_slit_near_field_model(x, A, z, d, wl, offset):
         (0.25 + 0.25j) * (d + 2 * (x - offset)) * np.sqrt(((2 * np.pi) / wl) / z)))))
 
 
-def double_slit_model(x, A, z, d, wl, L, offset):
+def double_slit_model(x, p1, p2, offset):
     '''
 
-    :param x:
-    :param A:
-    :param z:
-    :param d:
-    :param wl:
-    :param L:
-    :param offset:
+    :param x'=pi*L/wl*z*x:
+    :param p1=d/L:
+    :param p2=wl*z/4*A*L:
+    :param offset'=pi*L/wl*z*x*offset:
     :return:
     '''
-    return A * (8 * z * (np.cos(((2 * np.pi / wl) * L * (x - offset)) / (2 * z)) ** 2) * np.sin(
-        (d * (2 * np.pi /wl) * (x- offset)) / (2 * z)) ** 2) / ((2 * np.pi / wl) * np.pi * (x - offset) ** 2)
+    return ((np.cos(x - offset)) ** 2 * (np.sin(p1 * (x - offset))) ** 2) / (p2 * (x - offset) ** 2)
 
 
 def n_slits_model(x, A, z, d, wl, L, n, offset):
@@ -90,7 +86,7 @@ def n_slits_model(x, A, z, d, wl, L, n, offset):
         ((2 * np.pi / wl) * L * (1 + 2 * n) * (x - offset)) / (2 * z)) ** 2) / (
                    (2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
-def model_integrate(xdata,model,s,*args):
+def model_integrate(xdata,model,s, a,*args):
     '''
     used to create a model function with integration
 
@@ -102,9 +98,9 @@ def model_integrate(xdata,model,s,*args):
     '''
     ydata=np.zeros(len(xdata))
     for i in range(len(xdata)):
-        v = np.linspace(xdata[i] - s / 2, xdata[i] + s / 2, 1000)
+        v = np.linspace(xdata[i] - s / 2, xdata[i] + s / 2, 100)
         for j in v:
-            ydata[i] += model(j, *args)
+            ydata[i] += a * model(j, *args)*(s/100)
     return ydata
 
 
