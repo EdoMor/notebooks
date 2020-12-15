@@ -56,7 +56,7 @@ def single_slit_model(x, A, z, d, wl, offset):
             (2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
 
-def single_slit_model_redunced(xp, xp0, p2):
+def single_slit_model_redunced(xp, xp0, p2):# TODO: fix this model: insted of xp (Pp*x)
     return ((np.sin(xp - xp0) ** 2) / ((xp - xp0) ** 2)) * p2
 
 
@@ -95,14 +95,12 @@ def double_slit_model(x, A, z, d, wl, L, offset):
 
 
 def n_slits_model(x, A, z, d, wl, L, n, offset):
-    return A * (2 * z * csc(((2 * np.pi / wl) * L * (x - offset)) / (2 * z)) ** 2 * np.sin(
-        (d * (2 * np.pi / wl) * (x - offset)) / (2 * z)) ** 2 * np.sin(
-        ((2 * np.pi / wl) * L * (1 + 2 * n) * (x - offset)) / (2 * z)) ** 2) / (
-                   (2 * np.pi / wl) * np.pi * (x - offset) ** 2)
+    return (A*z*wl*csc((L*np.pi*(x-offset))/(z*wl))**2*np.sin((d*np.pi*(x-offset))/(z*wl))**2*np.sin((L*(1 + 2*n)*np.pi*(x-offset))/(z*wl))**2)/(np.pi**2*(x-offset)**2)
 
 
-def n_slits_model_reduced(xd, p2, pL, pn, xd0):
-    return p2 * (csc(pL * (xd - xd0)) ** 2 * np.sin(pn * (xd - xd0)) ** 2 * np.sin(xd - xd0) ** 2) / ((xd - xd0) ** 2)
+def n_slits_model_reduced(x, p2, pL, pn, x0):
+    return p2 * (csc(pL *  (x - x0)) ** 2 * np.sin(pn *  (x - x0)) ** 2 * np.sin( (x - x0)) ** 2) / (
+                ( (x - x0)) ** 2)
 
 
 def model_integrate(xdata, model, s, *args):
@@ -117,7 +115,7 @@ def model_integrate(xdata, model, s, *args):
     '''
     ydata = np.zeros(len(xdata))
     for i in range(len(xdata)):
-        ydata[i] = np.sum(model(np.linspace(xdata[i] - s, xdata[i] + s, 1000), *args) * ((2 * s) / 1000))
+        ydata[i] = np.sum(model(np.linspace(xdata[i] - s/2, xdata[i] + s/2, 1000), *args) * ((s) / 1000))
     return ydata
 
 
@@ -169,6 +167,12 @@ def add_subplot_minimap(ax, rect):
     subax.yaxis.set_tick_params(labelsize=y_labelsize)
     return subax
 
+def bplt(title:str,xlable:str,ylable:str,legend:list):
+    '''beautify plot'''
+    plt.title(title)
+    plt.xlabel(xlable)
+    plt.ylabel(ylable)
+    plt.legend(legend)
 
 def ring():
     filename = 'bell.wav'
