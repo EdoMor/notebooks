@@ -86,7 +86,8 @@ def n_slits_model(x, A, z, d, wl, L, n, offset):
         ((2 * np.pi / wl) * L * (1 + 2 * n) * (x - offset)) / (2 * z)) ** 2) / (
                    (2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
-def model_integrate(xdata,model,s, a,*args):
+
+def model_integrate(xdata, model, s, p1, p2, of):
     '''
     used to create a model function with integration
 
@@ -98,9 +99,9 @@ def model_integrate(xdata,model,s, a,*args):
     '''
     ydata=np.zeros(len(xdata))
     for i in range(len(xdata)):
-        v = np.linspace(xdata[i] - s / 2, xdata[i] + s / 2, 100)
+        v = np.linspace(xdata[i] - s / 2, xdata[i] + s / 2, 1000)
         for j in v:
-            ydata[i] += a * model(j, *args)*(s/100)
+            ydata[i] += (model(j+1, p1, p2, of)-model(j, p1, p2, of))/2*(s/1000)
     return ydata
 
 
