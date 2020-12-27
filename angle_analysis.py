@@ -20,18 +20,21 @@ def write_angle_voltages():
 
 def draw_plots(xdata,ydata,error):
     sbs.set()
-    plt.subplot(211)
-    plt.plot(xdata, ydata, '.')
-    plt.plot(xdata, parameters_optimized[0] * xdata + parameters_optimized[1])
-    plt.legend(['meshured data', 'fitted data'])
-    plt.xlabel('angle[deg]')
-    plt.ylabel('voltage[Volt]')
-    plt.title('angle vs voltage')
-    ax = plt.subplot(212)
-    plt.errorbar(xdata, ydata - (parameters_optimized[0] * xdata + parameters_optimized[1]),yerr=error ,fmt='.')
-    plt.xlabel('angle[deg]')
-    plt.ylabel('voltage[Volt]')
-    plt.title('residuals')
+    plt.rcParams["mathtext.fontset"] = 'cm'
+    plt.rcParams['axes.labelsize'] = 20
+    plt.rcParams['figure.dpi'] = 300
+    # plt.subplot(211)
+    plt.plot(xdata, parameters_optimized[0] * xdata + parameters_optimized[1],color=sbs.color_palette()[3])
+    plt.errorbar(xdata, ydata,xerr=0.5, fmt='.',markersize=5,color=sbs.color_palette()[7])
+    plt.legend(['fitted data', 'measured data'])
+    plt.xlabel(r'$\theta[deg^\circ]$')
+    plt.ylabel(r'$V\ [Volts]$')
+    plt.title('angle measured against voltage')
+    # ax = plt.subplot(212)
+    # plt.errorbar(xdata, ydata - (parameters_optimized[0] * xdata + parameters_optimized[1]),yerr=error ,fmt='.')
+    # plt.xlabel('angle[deg]')
+    # plt.ylabel('voltage[Volt]')
+    # plt.title('residuals')
     plt.show()
 
 

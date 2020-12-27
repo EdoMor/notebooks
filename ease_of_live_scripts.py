@@ -56,8 +56,8 @@ def single_slit_model(x, A, z, d, wl, offset):
             (2 * np.pi / wl) * np.pi * (x - offset) ** 2)
 
 
-def single_slit_model_redunced(xp, xp0, p2):# TODO: fix this model: insted of xp (Pp*x)
-    return ((np.sin(xp - xp0) ** 2) / ((xp - xp0) ** 2)) * p2
+def single_slit_model_redunced(x, dD, xp0, p2):# TODO: fix this model: insted of xp (Pp*x)
+    return ((np.sin(dD*(x - xp0)) ** 2) / ((dD*(x - xp0)) ** 2)) * p2
 
 
 def single_slit_model_with_integration(x, A, z, d, wl, s, offset):
@@ -113,9 +113,10 @@ def model_integrate(xdata, model, s, *args):
     :param args: additional model arguments
     :return: integrative model function
     '''
+    q=5000
     ydata = np.zeros(len(xdata))
     for i in range(len(xdata)):
-        ydata[i] = np.sum(model(np.linspace(xdata[i] - s/2, xdata[i] + s/2, 1000), *args) * ((s) / 1000))
+        ydata[i] = np.sum(model(np.linspace(xdata[i] - s/2, xdata[i] + s/2, q), *args) * ((s) / q))
     return ydata
 
 
